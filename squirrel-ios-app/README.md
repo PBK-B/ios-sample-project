@@ -1,3 +1,3 @@
-# IOS Sample Project
+# Squirrel
 
 A description of this package.
