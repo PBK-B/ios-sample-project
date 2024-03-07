@@ -2,7 +2,7 @@
 
 A description of this package.
 
-## 目录
+## Directory
 
 - [squirrel-ios-app](/squirrel-ios-app) - SafariWebExtension Sample
 

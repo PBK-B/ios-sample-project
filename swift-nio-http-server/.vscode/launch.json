@@ -1,0 +1,28 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "args": [],
+            "cwd": "${workspaceFolder:swift-nio-http-server}",
+            "name": "Debug swift-nio-http-server",
+            "program": "${workspaceFolder:swift-nio-http-server}/.build/debug/swift-nio-http-server",
+            "preLaunchTask": "swift: Build Debug swift-nio-http-server"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "args": [],
+            "cwd": "${workspaceFolder:swift-nio-http-server}",
+            "name": "Release swift-nio-http-server",
+            "program": "${workspaceFolder:swift-nio-http-server}/.build/release/swift-nio-http-server",
+            "preLaunchTask": "swift: Build Release swift-nio-http-server"
+        }
+    ]
+}
