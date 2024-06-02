@@ -47,4 +47,20 @@ final class testTests: XCTestCase {
             XCTFail("Unexpected error: \(error)")
         }
     }
+
+    func testWaitNotThrows() {
+        // 创建一个异步任务，模拟失败的情况
+        let asyncTask = Task {
+            await Task.sleep(3 * 1_000_000_000) // 模拟异步操作，等待 3 秒
+            throw TestError()
+        }
+
+        // 调用 wait 方法等待任务完成
+        if let _ = asyncTask.waitNotThrows(timeout: 2) {
+            XCTFail("Expected error but got success")
+        } else {
+            // 预期超时异常
+            XCTAssert(true, "Timeout error occurred")
+        }
+    }
 }

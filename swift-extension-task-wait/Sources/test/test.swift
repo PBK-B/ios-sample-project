@@ -1,7 +1,7 @@
 import Foundation
+
 // The Swift Programming Language
 // https://docs.swift.org/swift-book
-
 
 // 自定义超时错误类型
 enum TaskWaitTimeoutError: Error {
@@ -10,7 +10,6 @@ enum TaskWaitTimeoutError: Error {
 
 @available(macOS 10.15, *)
 extension Task {
-
     func wait(timeout: TimeInterval = -1) throws -> Success {
         var result: Result<Success, Error>?
         let semaphore = DispatchSemaphore(value: 0)
@@ -51,5 +50,13 @@ extension Task {
         }
 
         return try result.get()
+    }
+
+    func waitNotThrows(timeout: TimeInterval = -1) -> Success? {
+        do {
+            return try wait(timeout: timeout)
+        } catch {
+            return nil
+        }
     }
 }
