@@ -4,9 +4,11 @@ import KSCrash_Reporting_Filters
 public class KSCrashReportSinkFile: KSCrashReportFilterPipeline {
     // 输出日志目录
     public var filePath: String?
+    public var fileDir: String?
 
-    init(path: String?) {
+    init(path: String?, dir: String? = nil) {
         filePath = path
+        fileDir = dir
         super.init()
     }
 
@@ -16,7 +18,15 @@ public class KSCrashReportSinkFile: KSCrashReportFilterPipeline {
             // 输出到用户指定文件中
             return filePath
         }
-        var tmpFileName = "ios_client_crash.json" // 临时文件名
+        // var tmpFileName = "ios_client_crash.json" // 临时文件名
+        let formatter = DateFormatter()
+        formatter.dateFormat = "YYYY_MM_dd"
+        let processInfo = ProcessInfo.processInfo
+        let tmpFileName = "\(processInfo.processName)-\(formatter.string(from: .init()))-\(processInfo.processIdentifier).json"
+        if let fileDir {
+            // 输出到用户指定的文件夹中
+            return fileDir + "/" + tmpFileName
+        }
         return NSTemporaryDirectory() + "/" + tmpFileName
     }
 

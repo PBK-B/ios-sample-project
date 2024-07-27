@@ -3,6 +3,7 @@ import KSCrash_Installations
 
 public struct KSCrashInstallationFileOpts {
     public var outFilePath: String?
+    public var outDirPath: String?
     public var reportStyle: KSAppleReportStyle?
 
     public init(outFilePath: String? = nil, reportStyle: KSAppleReportStyle? = nil) {
@@ -36,7 +37,7 @@ public class KSCrashInstallationFile: KSCrashInstallationConsole {
             // reportStyle: KSAppleReportStyleSymbolicated
             filters.append(KSCrashReportFilterAppleFmt(reportStyle: style))
         }
-        filters.append(KSCrashReportSinkFile(path: options.outFilePath))
+        filters.append(KSCrashReportSinkFile(path: options.outFilePath, dir: options.outDirPath))
 
         // addPreFilter(KSCrashReportFilterPipelineRef(filters: filters))
         for item in filters {
