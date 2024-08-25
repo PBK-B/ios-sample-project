@@ -38,17 +38,17 @@ public struct TCPForwarderSocket {
     }
 }
 
-class TCPForwarder: NSObject, GCDAsyncSocketDelegate {
+public class TCPForwarder: NSObject, GCDAsyncSocketDelegate {
     var localListenSocket: GCDAsyncSocket!
     var sourceHost: String?, sourcePort: UInt16?
     var connectSockets: [TCPForwarderSocket] = []
 
     // 获取本地监听地址
-    var localAddress: String {
+    public var localAddress: String {
         "\(localListenSocket.localHost ?? "127.0.0.1"):\(localListenSocket.localPort)"
     }
 
-    override init() {
+    public override init() {
         super.init()
 
         localListenSocket = GCDAsyncSocket(delegate: self, delegateQueue: .global())
@@ -63,7 +63,7 @@ class TCPForwarder: NSObject, GCDAsyncSocketDelegate {
         connectSockets.removeAll() // 移除全部连接
     }
 
-    func start(from sourceHost: String, sourcePort: UInt16, to localHost: String, localPort: UInt16) throws {
+    public func start(from sourceHost: String, sourcePort: UInt16, to localHost: String, localPort: UInt16) throws {
         self.sourceHost = sourceHost
         self.sourcePort = sourcePort
 
@@ -74,7 +74,7 @@ class TCPForwarder: NSObject, GCDAsyncSocketDelegate {
         }
     }
 
-    func socket(_: GCDAsyncSocket, didAcceptNewSocket newSocket: GCDAsyncSocket) {
+    public func socket(_: GCDAsyncSocket, didAcceptNewSocket newSocket: GCDAsyncSocket) {
         // 连接远程TCP服务器
         var proxyItem: TCPForwarderSocket?
         proxyItem = connectSockets.filter { $0.clientSocket == newSocket }.first
@@ -118,7 +118,7 @@ class TCPForwarder: NSObject, GCDAsyncSocketDelegate {
         }
     }
 
-    func socket(_ sock: GCDAsyncSocket, didConnectToHost _: String, port _: UInt16) {
+    public func socket(_ sock: GCDAsyncSocket, didConnectToHost _: String, port _: UInt16) {
         // 连接成功
         if let _ = connectSockets.filter({ $0.remoteSocket == sock || $0.clientSocket == sock }).first {
             // 远端或者客户端连接成功，读取数据
@@ -129,7 +129,20 @@ class TCPForwarder: NSObject, GCDAsyncSocketDelegate {
         }
     }
 
-    func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: (any Error)?) {
+    public func socket(_ sock: GCDAsyncSocket, didRead data: Data, withTag _: Int) {
+        if let item = connectSockets.filter({ $0.remoteSocket == sock }).first {
+            // 如果是来自远程的数据，则转发到本地监听Socket
+            item.clientSocket.write(data, withTimeout: -1, tag: 0)
+        } else if let item = connectSockets.filter({ $0.clientSocket == sock }).first {
+            // 如果是来自本地的数据，则转发到远程Socket
+            item.remoteSocket.write(data, withTimeout: -1, tag: 0)
+            print("TCPForwarder didRead localListenSocket \(data.count)")
+        }
+        // 继续监听数据
+        sock.readData(withTimeout: -1, tag: 0)
+    }
+
+    public func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: (any Error)?) {
         if let index = connectSockets.firstIndex(where: { $0.clientSocket == sock }), index >= 0 {
             // 客户端断开连接
             print("TCPForwarder clientSocket socketDidDisconnect \(err?.localizedDescription ?? "nil") \(connectSockets.count):\(index)")
@@ -144,18 +157,5 @@ class TCPForwarder: NSObject, GCDAsyncSocketDelegate {
         } else if sock == localListenSocket {
             print("TCPForwarder localListenSocket socketDidDisconnect \(err?.localizedDescription ?? "nil")")
         }
-    }
-
-    func socket(_ sock: GCDAsyncSocket, didRead data: Data, withTag _: Int) {
-        if let item = connectSockets.filter({ $0.remoteSocket == sock }).first {
-            // 如果是来自远程的数据，则转发到本地监听Socket
-            item.clientSocket.write(data, withTimeout: -1, tag: 0)
-        } else if let item = connectSockets.filter({ $0.clientSocket == sock }).first {
-            // 如果是来自本地的数据，则转发到远程Socket
-            item.remoteSocket.write(data, withTimeout: -1, tag: 0)
-            print("TCPForwarder didRead localListenSocket \(data.count)")
-        }
-        // 继续监听数据
-        sock.readData(withTimeout: -1, tag: 0)
     }
 }
