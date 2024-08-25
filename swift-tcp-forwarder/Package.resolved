@@ -1,0 +1,24 @@
+{
+  "originHash" : "18a8c6e66652b0052de916a1a8471fbae11166595900c2de3dced7f4c2c025a0",
+  "pins" : [
+    {
+      "identity" : "cocoaasyncsocket",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/robbiehanson/CocoaAsyncSocket",
+      "state" : {
+        "branch" : "master",
+        "revision" : "5ddba5e72f38e56010dbfac08b44478ee5000c0c"
+      }
+    },
+    {
+      "identity" : "swift-argument-parser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-argument-parser",
+      "state" : {
+        "branch" : "main",
+        "revision" : "e3d8a3dd42079ac0d3429246a59602c6f6bf9a21"
+      }
+    }
+  ],
+  "version" : 3
+}
