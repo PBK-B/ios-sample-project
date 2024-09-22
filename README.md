@@ -15,3 +15,5 @@ A description of this package.
 - [swift-kscrash-installation-file](/swift-kscrash-installation-file) - KSCrash installation file sample
 
 - [swift-tcp-forwarder](/swift-tcp-forwarder) - CocoaAsyncSocket TCP Proxy
+
+- [swift-dns-query](/swift-dns-query) - DNS Query for CFHostCreateWithName
