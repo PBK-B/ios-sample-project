@@ -1,6 +1,6 @@
 # IOS Sample Project
 
-A description of this package.
+iOS related projects sample project archive for blogging or other reference
 
 ## Directory
 
